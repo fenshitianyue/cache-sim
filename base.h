@@ -85,7 +85,19 @@ extern float f_load_rate; //Cache hit rate for loads
 extern float f_store_rate; //Cache hit rate for stores
 ///////////////////////////////////////////////////////
 
-
+///////////////////////////////////////////////////////
+// 说明：
+//      本程序没有解决False sharing问题(多线程程序环境)。
+//      本程序写策略默认采用写回法，而写回法有一致性问题
+//   所以本程序采用 MESI协议 解决内存和cache的一致性问题。
+//   
+//   cache每一行的[31]位为valid标志:
+//      true 对应 MESI 协议中的 I(invalid)
+//      false 对应 MESI 协议中的 S(shared)
+//   cache每一行的[29]位为dirty标志：
+//      true 对应 MESI 协议中的 M(modified)
+//      false 对应 MESI 协议中的 E(exclusive)
+///////////////////////////////////////////////////////
 extern std::bitset<32> cache_item[MAX_CACHE_LINE]; // [31]:valid,[30]:hit,[29]:dirty,[28]-[0]:data
 extern unsigned long int LRU_priority[MAX_CACHE_LINE]; //For LRU policy's priority ,标识cache中行的优先级
 extern unsigned long int current_line; // The line num which is processing
