@@ -1,0 +1,47 @@
+输入说明(执行程序的输入参数)：
+
+cache size：仅cache中数据的总大小。eg: 32KB
+cache line size: cache 行大小。eg: 16bytes, 32bytes
+支持关联：直接映射（用1/DM作为参数）
+          组相连映射（用对应的几路组相联数作为关联参数）
+          全相连映射（用0/FA作为参数）
+替换策略：默认采用随机映射（Random）
+支持写策略：写分配
+            写回
+
+输出说明：
+（由于在这个实验中没有模拟cache性能（延迟），所以假设每次cache访问（命中/未命中）都在下一次cache操作之前完成。
+  本程序默认实现的内存地址为32位）
+  
+  高速 cache 访问次数
+  cache 负载数
+  高速 cache 存储器数
+  平均 cache 命中率
+  负载 cache 命中率 
+  存储的 cache 命中率
+
+配置说明：
+  1. cache size：256 KB
+     cache line size: 8 bytes
+     直接映射（direct mapped)
+  2. cache size: 64 KB
+     cache line size: 32 bytes
+     四路组相联
+     LRU替换策略
+  3. cache size: 64 KB
+     cache line size: 32 bytes
+     四路组相联
+     随机替换策略
+  4. cache size: 8 KB
+     cache line size: 64 KB
+     全相联映射 
+     LRU替换策略
+  
+测试文件说明：
+  s 0x1fffff50 
+  (s：表示存储
+   l：表示装载 
+   0x1fffff50：16进制的32位地址)
+
+
+  
