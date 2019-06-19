@@ -44,7 +44,103 @@ unsigned long int temp = 0; //A temp varibale
 //using namespace std; 暂时不确定是否要使用全局命名空间
 
 bool GetHitNum(char* address){
-  //TODO   
+  bool is_store = false;
+  bool is_load = false;
+  bool is_space = false;
+  bool hit = false;
+
+  switch(address[0]){
+    case 's':
+      is_store = true;
+      break;
+    case 'l':
+      is_load = true;
+      break;
+    case '\0': //in case of space line
+      is_space = true;
+      break;
+    default:
+      std::cout << "The address[0] is: " << address[0] << std::endl;
+      return false;
+  }
+  temp = strtoul(address+2, NULL, 16);
+  std::bitset<32> flags(temp);
+#ifndef NDEBUG 
+  std::cout << flags << std::endl;
+#endif
+  hit = IsHit(flags);
+  if(hit && is_load){
+    ++i_num_access; //访问次数+1
+    ++i_num_load; //读取次数+1
+    ++i_num_load_hit; //读取命中次数+1
+    ++i_num_hit; //命中次数+1
+#ifndef NDEBUG 
+    std::cout << "Loading..." << std::endl;
+    std::cout << "Hit" << std::endl;
+    std::cout << "Read from Cache..." << std::endl;
+#endif
+    if(LRU == t_replace){
+      LruHitProcess();
+    }
+  } else if (hit && is_store){
+    ++i_num_access; //访问次数+1
+    ++i_num_store; //存储次数+1
+    ++i_num_store_hit; //存储命中次数+1
+    ++i_num_hit; //命中次数+1
+#ifndef NDEBUG 
+    std::cout << "Storing..." << std::endl;
+    std::cout << "Hit" << std::endl;
+    std::cout << "Write to Cache..." << std::endl;
+#endif
+    
+    cache_item[current_line][29] = true; //设置dirty位为true
+    if(LRU == t_replace){
+      LruHitProcess();
+    }
+    
+  } else if (!hit && is_load){
+    ++i_num_access; //访问次数+1
+    ++i_num_load; //读取次数+1
+#ifndef NDEBUG 
+    std::cout << "Loading..." << std::endl;
+    std::cout < "Not Hit" << std::endl;
+#endif
+    GetRead(flags); //read data from memory
+#ifndef NDEBUG
+    std::cout << "Read from cache..." << std::endl; 
+#endif
+    if(LRU == t_replace){
+      LruUnhitSpace();
+    }
+  } else if (!hit && is_store){
+    ++i_num_access; //访问次数+1
+    ++i_num_store; //存储次数+1
+#ifndef NDEBUG
+    std::cout << "Storing..." << std::endl;
+    std::cout << "Not Hit" << std::endl;
+#ifndef NDEBUG
+    GetRead(flags);
+    std::cout << "Write to Cache..." << std::endl;
+#endif 
+    cache_item[current_line][29] = true; //设置dirty为true
+
+    if(t_replace == LRU){
+        LruUnhitSpace();
+    }
+#endif // NDEBUG
+  } else if (is_space){ //if it's an empty line
+    ++i_num_space;
+  } else {
+    std::cerr << "Something Error" << std::endl;
+    return false;
+  }
+  if(i_num_space != 0){
+#ifndef NDEBUG 
+    std::cout << "There have" << i_num_space << " space lines"
+              << std::endl;
+#endif
+  }
+
   return true;
 }
 
@@ -169,7 +265,7 @@ void GetRead(std::bitset<32> flags){
   if(direct_mapped == t_assoc){
     if(!cache_item[current_line][30]){ //miss hit
 #ifndef NDEBUG 
-      cout << "Read from Main Memory to Cache!" << endl;
+      std::cout << "Read from Main Memory to Cache!" << std::endl;
 #endif
       for(i = 31, j = 28; i > (31ul - bit_tag); --i, --j){
         cache_item[current_line][j] = flags[i];
@@ -205,7 +301,7 @@ void GetRead(std::bitset<32> flags){
       GetReplace(flags);
     }
   } else if (set_associative == t_assoc){
-    //TODO
+    //TODO:暂时先不做什么
   }
 }
 
