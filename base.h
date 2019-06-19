@@ -105,17 +105,17 @@ extern unsigned long int current_set; // The set num which is processing
 extern unsigned long int i,j; //For loop
 extern unsigned long int temp; //A temp varibale
 
-bool GetHitNum(char *address);
-void GetHitRate(void);
-bool IsHit(std::bitset<32> flags);
-void GetReplace(std::bitset<32> flags);
-void GetRead(std::bitset<32> flags);
-void GetWrite();
+bool GetHitNum(char *address); // -> base.cc
+void GetHitRate(void); // -> base.cc
+bool IsHit(std::bitset<32> flags); // -> base.cc
+void GetReplace(std::bitset<32> flags); // -> base.cc
+void GetRead(std::bitset<32> flags); // -> base.cc
+void GetWrite(); // -> base.cc
 
 void InitVariables(void); // -> InitVariables.cpp
 void GetInput(void); 
 void CalcInfo(void);
-void CreateCache(void);
+void CreateCache(void); // -> CreateCache.cc
 void FileTest(void);
 void PrintOutput(void);
 
