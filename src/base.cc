@@ -161,9 +161,8 @@ bool IsHit(std::bitset<32> flags){
     assert(cache_item[current_line][31]);
     if(cache_item[current_line][30]){ //判断hit位是否为真
       ret = true;
-      //TODO
       //判断标记是否相同。i -> address, j -> cache
-      for(i = 31, j = 28; i > (31ul - bit_tag); --i, --j){
+      for(i = 31, j = 28; i > (31 - bit_tag); --i, --j){
         if(flags[i] != cache_item[current_line][j]){
           ret = false;
           break;
@@ -180,7 +179,7 @@ bool IsHit(std::bitset<32> flags){
       if(cache_item[temp][30]){
         ret = true;
         //判断标记是否相同。i -> address, j -> cache
-        for(i = 31, j = 28; i > (31ul - bit_tag); --i, --j){
+        for(i = 31, j = 28; i > (31 - bit_tag); --i, --j){
           if(flags[i] != cache_item[current_line][j]){
             ret = false;
             break;
@@ -208,7 +207,7 @@ bool IsHit(std::bitset<32> flags){
       if(cache_item[temp][30]){
         ret = true;
         //判断标记是否相同。i -> address, j -> cache
-        for(i = 31, j = 28; i > (31ul - bit_tag); --i, --j){
+        for(i = 31, j = 28; i > (31 - bit_tag); --i, --j){
           if(flags[i] != cache_item[temp][j]){
             ret = false;
             break;
@@ -253,7 +252,7 @@ void GetReplace(std::bitset<32> flags){
   std::cout << "Read from Main Memory to Cache: " << std::endl;
 #endif
   //设置标记
-  for(i = 31, j = 28; i > (31ul - bit_tag); --i, --j){
+  for(i = 31, j = 28; i > (31 - bit_tag); --i, --j){
     cache_item[current_line][j] = flags[i];
     assert(j > 0);
   }
@@ -267,7 +266,7 @@ void GetRead(std::bitset<32> flags){
 #ifndef NDEBUG 
       std::cout << "Read from Main Memory to Cache!" << std::endl;
 #endif
-      for(i = 31, j = 28; i > (31ul - bit_tag); --i, --j){
+      for(i = 31, j = 28; i > (31 - bit_tag); --i, --j){
         cache_item[current_line][j] = flags[i];
         assert(j > 0);
       }
@@ -289,7 +288,7 @@ void GetRead(std::bitset<32> flags){
 #ifndef NDEBUG 
       std::cout << "Read from Main Memory to Cache!" << std::endl;
 #endif
-      for(i = 31, j = 28; i > (31ul - bit_tag); --i, --j){
+      for(i = 31, j = 28; i > (31 - bit_tag); --i, --j){
         cache_item[current_line][j] = flags[i];
         assert(j > 0);
       } 
