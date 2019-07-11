@@ -26,9 +26,9 @@ unsigned long int i_num_hit = 0; //number of cache hit
 unsigned long int i_num_load_hit = 0; //number of load hit
 unsigned long int i_num_store_hit = 0; //number of store hit
 
-float f_ave_rate = 0.0; //average cache hit rate
-float f_load_rate = 0.0; //cache hit rate for loads
-float f_store_rate = 0.0; //cache hit rate for stores
+double f_ave_rate = 0.0; //average cache hit rate
+double f_load_rate = 0.0; //cache hit rate for loads
+double f_store_rate = 0.0; //cache hit rate for stores
 
 std::bitset<32> cache_item[MAX_CACHE_LINE]; // [31]:valid,[30]:hit,[29]:dirty,[28]-[0]:data
 unsigned long int LRU_priority[MAX_CACHE_LINE]; //For LRU policy's priority
@@ -162,7 +162,7 @@ bool IsHit(std::bitset<32> flags){
     if(cache_item[current_line][30]){ //判断hit位是否为真
       ret = true;
       //判断标记是否相同。i -> address, j -> cache
-      for(i = 31, j = 28; i > (31 - bit_tag); --i, --j){
+      for(i = 31, j = 28; i > (31ul - bit_tag); --i, --j){
         if(flags[i] != cache_item[current_line][j]){
           ret = false;
           break;
@@ -175,12 +175,12 @@ bool IsHit(std::bitset<32> flags){
     //所以需要比较每一行的索引值才能确定cache中是否存在所
     //需要数据。
     ///////////////////////////////////////////////////////
-    for(temp = 0; temp < i_num_line; ++i){
+    for(temp = 0; temp < i_num_line; ++temp){
       if(cache_item[temp][30]){
         ret = true;
         //判断标记是否相同。i -> address, j -> cache
-        for(i = 31, j = 28; i > (31 - bit_tag); --i, --j){
-          if(flags[i] != cache_item[current_line][j]){
+        for(i = 31, j = 28; i > (31ul - bit_tag); --i, --j){
+          if(flags[i] != cache_item[temp][j]){
             ret = false;
             break;
           }   
@@ -207,7 +207,7 @@ bool IsHit(std::bitset<32> flags){
       if(cache_item[temp][30]){
         ret = true;
         //判断标记是否相同。i -> address, j -> cache
-        for(i = 31, j = 28; i > (31 - bit_tag); --i, --j){
+        for(i = 31, j = 28; i > (31ul - bit_tag); --i, --j){
           if(flags[i] != cache_item[temp][j]){
             ret = false;
             break;
@@ -252,7 +252,7 @@ void GetReplace(std::bitset<32> flags){
   std::cout << "Read from Main Memory to Cache: " << std::endl;
 #endif
   //设置标记
-  for(i = 31, j = 28; i > (31 - bit_tag); --i, --j){
+  for(i = 31, j = 28; i > (31ul - bit_tag); --i, --j){
     cache_item[current_line][j] = flags[i];
     assert(j > 0);
   }
@@ -266,7 +266,7 @@ void GetRead(std::bitset<32> flags){
 #ifndef NDEBUG 
       std::cout << "Read from Main Memory to Cache!" << std::endl;
 #endif
-      for(i = 31, j = 28; i > (31 - bit_tag); --i, --j){
+      for(i = 31, j = 28; i > (31ul - bit_tag); --i, --j){
         cache_item[current_line][j] = flags[i];
         assert(j > 0);
       }
@@ -288,7 +288,7 @@ void GetRead(std::bitset<32> flags){
 #ifndef NDEBUG 
       std::cout << "Read from Main Memory to Cache!" << std::endl;
 #endif
-      for(i = 31, j = 28; i > (31 - bit_tag); --i, --j){
+      for(i = 31, j = 28; i > (31ul - bit_tag); --i, --j){
         cache_item[current_line][j] = flags[i];
         assert(j > 0);
       } 
@@ -300,9 +300,30 @@ void GetRead(std::bitset<32> flags){
       GetReplace(flags);
     }
   } else if (set_associative == t_assoc){
-    //TODO:暂时先不做什么
-  }
-}
+    bool space = false;
+    for(temp=(current_set*i_cache_set); temp < ((current_set+1)*i_cache_set); ++temp){
+      if(!cache_item[temp][30]){
+        space = true;
+        break;
+      }
+    }//end for(temp...)
+    if(space){
+      current_line = temp;
+#ifndef NDEBUG 
+      std::cout << "Read from Main memory to Cache!" << std::endl;
+#endif
+      for(i = 31, j = 28; i > (31ul - bit_tag); --i, --j){
+        cache_item[current_line][j] = flags[i];
+        assert(j > 0);
+      }
+      cache_item[current_line][30] = true;
+      if(LRU == t_replace) 
+        LruUnhitSpace();
+    }else{
+      GetReplace(flags);
+    }
+  }//end else if
+}//end GetRead
 
 //模拟写入内存
 void GetWrite(){
@@ -319,11 +340,11 @@ void GetHitRate(){
   assert(i_num_load != 0);
   assert(i_num_store != 0);
   //average cache hit rate
-  f_ave_rate = ((double)i_num_hit) / i_num_access;
+  f_ave_rate = static_cast<double>(i_num_hit) / i_num_access;
   //cache hit rate for loads
-  f_load_rate = ((double)i_num_load_hit) / i_num_load;
+  f_load_rate = static_cast<double>(i_num_load_hit) / i_num_load;
   //cache hit rate for store 
-  f_store_rate = ((double)i_num_store_hit) / i_num_store; 
+  f_store_rate = static_cast<double>(i_num_store_hit) / i_num_store; 
 }
 
 
