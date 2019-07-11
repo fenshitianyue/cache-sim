@@ -4,7 +4,7 @@ void GetCacheSize(){
   std::cout << std::endl;
   std::cout << "Input the number of the cache size(Unit:KB)";
   std::cout << std::endl;
-  std::cout << "\t" << "(for example:1,2,4,8...2^18)";
+  std::cout << "\t" << "(for example:1,2,4,8...2^18)" << std::endl;
   std::cin >> i_cache_size;
   if(std::cin.fail()){
     std::cin.clear();
@@ -19,14 +19,13 @@ void GetCacheLineSize(){
   std::cout << std::endl;
   std::cout << "Input the number of the cacheline size(Unit:Byte)";
   std::cout << std::endl;
-  std::cout << "\t" << "(for example:1,2,4,8...2^18)";
-  std::cin >> i_cache_size;
+  std::cout << "\t" << "(for example:1,2,4,8...2^18)" << std::endl;
+  std::cin >> i_cache_line_size;
   if(std::cin.fail()){
     std::cin.clear();
     std::cin.sync();
   }
-  if(i_cache_line_size < 1 || i_cache_line_size >= 262144  
-     || (i_cache_line_size & (~i_cache_line_size + 1)) != i_cache_line_size){
+  if(i_cache_line_size < 1 || i_cache_line_size >= 262144 || (i_cache_line_size & (~i_cache_line_size + 1)) != i_cache_line_size){
     GetCacheLineSize();
   }
 }
@@ -37,7 +36,7 @@ void GetMappingMethod(){
   std::cout << "Input the method of assoiativity between main memory and cache:" << std::endl;
   std::cout << "\t" << "directive_mapped:input 1" << std::endl;
   std::cout << "\t" << "set_associative:input 2" << std::endl;
-  std::cout << "\t" << "set associative:input 3";
+  std::cout << "\t" << "full_associative:input 3" << std::endl;
   std::cin >> tmp;
 	if(std::cin.fail()){
     std::cin.clear();
@@ -61,7 +60,7 @@ void GetMappingMethod(){
 void GetLineCountEachSet(){
   std::cout << std::endl;
   std::cout << "Input the how many lines in each set:" << std::endl;
-  std::cout << "\t" << "(for example:1,2,4,8...2^18)";
+  std::cout << "\t" << "(for example:1,2,4,8...2^18)" << std::endl;
   std::cin >> i_cache_set;
 	if (std::cin.fail()){
     std::cin.clear();
@@ -79,7 +78,7 @@ void GetReplacePolicy(){
   std::cout << "\t" << "FIFO:input 1" << std::endl;	
   std::cout << "\t" << "LRU :input 2" << std::endl;
   std::cout << "\t" << "LFU :input 3" << std::endl;
-  std::cout << "\t" << "Random:input 4";
+  std::cout << "\t" << "Random:input 4" << std::endl;
   std::cin >> tmp;
 	if (std::cin.fail()){
     std::cin.clear();
@@ -109,7 +108,7 @@ void GetWritePolicy(){
   std::cout << std::endl;
   std::cout << "Input write policy:" << std::endl;
   std::cout << "\t" << "Write through:input 1" << std::endl;
-  std::cout << "\t" << "Write back:input 2";
+  std::cout << "\t" << "Write back:input 2" << std::endl;
   std::cin >> tmp;
 	if(std::cin.fail()){
     std::cin.clear();
