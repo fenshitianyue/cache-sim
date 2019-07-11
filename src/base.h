@@ -11,8 +11,8 @@
 
 //#define OUTPUT //用于将信息写入日志文件test.log
 
-#define DirectMapped_None_WriteBack //直接映射无回写
-#define FullAssociative_Random_WriteBack //全相联随机回写
+//#define DirectMapped_None_WriteBack //直接映射无回写
+//#define FullAssociative_Random_WriteBack //全相联随机回写
 #define SetAssociative_Random_WriteBack //组相联随机回写
 
 //cpp
@@ -32,7 +32,7 @@
 #define MAX_CACHE_LINE 65536 //(2^16) -> cache最大行数
 #endif 
 #ifndef QUICK 
-#define MAX_CACHE_LINE 268435436 //the max num of gcc array support (2^28)
+#define MAX_CACHE_LINE 268435456 //the max num of gcc array support (2^28)
 #endif
 
 #ifndef STRUCT_TYPE 
@@ -80,9 +80,9 @@ extern unsigned long int i_num_hit; //Number of cache hit
 extern unsigned long int i_num_load_hit; //Number of load hit
 extern unsigned long int i_num_store_hit; //Number of store hit
 
-extern float f_ave_rate; //Average cache hit rate
-extern float f_load_rate; //Cache hit rate for loads
-extern float f_store_rate; //Cache hit rate for stores
+extern double f_ave_rate; //Average cache hit rate
+extern double f_load_rate; //Cache hit rate for loads
+extern double f_store_rate; //Cache hit rate for stores
 ///////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////
@@ -112,14 +112,14 @@ void GetReplace(std::bitset<32> flags); // -> base.cc
 void GetRead(std::bitset<32> flags); // -> base.cc
 void GetWrite(); // -> base.cc
 
-void InitVariables(void); // -> InitVariables.cpp
-void GetInput(void); 
-void CalcInfo(void);
+void InitVariables(void); // -> InitVariables.cc
+void GetInput(void); // -> GetInput.cc
+void CalcInfo(void); // -> CalcInfo.cc
 void CreateCache(void); // -> CreateCache.cc
-void FileTest(void);
-void PrintOutput(void);
+void FileTest(void); // -> FileTest.cc
+void PrintOutput(void); // -> PrintOutput.cc
 
-void LruHitProcess();
+void LruHitProcess(); // ->LRU.cc
 void LruUnhitSpace();
 void LruUnhitUnspace();
 
