@@ -7,7 +7,7 @@ void FileTest(void){
   std::cout << std::endl;
   std::cout << "Please input the path and name that you want to test!" << std::endl;
   std::cout << "(eg:C:\\temp\\myfile.trace" << std::endl;
-  std::cout << "myfile.trace" << std::endl;
+  std::cout << "    myfile.trace)" << std::endl;
   std::cin >> filepath;
   in_file.open(filepath, std::ios::in);
   while(in_file.fail()){
