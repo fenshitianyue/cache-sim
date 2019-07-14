@@ -6,7 +6,7 @@ void LruHitProcess(){
     for(i = 0; i < i_num_line; ++i){
       //如果该行比正在访问的行的行计数器小，并且当前行的hit标记为true
       //PS：这里有一个额外添加的策略
-      if(LRU_priority[i] < LRU_priority[current_line] && cache_item[current_line][30]){
+      if(LRU_priority[i] < LRU_priority[current_line] && cache_item[current_line][30]){ 
         ++LRU_priority[i];
       }
     }
@@ -48,7 +48,10 @@ void LruUnhitUnspace(){
         j = i;
       }
     }
-  }else if(set_associative == t_assoc){
+    current_line = j;
+  }
+
+  if(set_associative == t_assoc){
     temp = LRU_priority[current_set * i_cache_set];
     for(i = (current_set * i_cache_set); i < ((current_set+1) * i_cache_set); ++i){
       if(LRU_priority[i] >= temp){
@@ -56,7 +59,7 @@ void LruUnhitUnspace(){
         j = i;
       }
     }
+    current_line = j;
   }
-  current_line = j;
 }
 
