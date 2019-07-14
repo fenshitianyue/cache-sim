@@ -10,7 +10,9 @@ void InitVariables(void){
     i_cache_line_size = 32; // cacheline size
 #ifdef SetAssociative_Random_WriteBack 
     i_cache_set = 4; //cache set
-#else //TODO
+#else 
+    i_num_line = 0; 
+    i_num_set = 0; 
     i_cache_set = 0; //some changes have been made to the old project
 #endif //SetAssociative_Random_WriteBack
 #ifdef DirectMapped_None_WriteBack 
