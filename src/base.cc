@@ -41,8 +41,6 @@ unsigned long int temp = 0; //A temp varibale
 // defination of almost all function
 ///////////////////////////////////////////////////////
 
-//using namespace std; 暂时不确定是否要使用全局命名空间
-
 bool GetHitNum(char* address){
   bool is_store = false;
   bool is_load = false;
@@ -61,6 +59,7 @@ bool GetHitNum(char* address){
       break;
     default:
       std::cout << "The address[0] is: " << address[0] << std::endl;
+      std::cout << "Error in judge!" << std::endl;
       return false;
   }
   temp = strtoul(address+2, NULL, 16);
@@ -118,8 +117,9 @@ bool GetHitNum(char* address){
 #ifndef NDEBUG
     std::cout << "Storing..." << std::endl;
     std::cout << "Not Hit" << std::endl;
-#ifndef NDEBUG
+#endif 
     GetRead(flags);
+#ifndef NDEBUG
     std::cout << "Write to Cache..." << std::endl;
 #endif 
     cache_item[current_line][29] = true; //设置dirty为true
@@ -127,7 +127,6 @@ bool GetHitNum(char* address){
     if(t_replace == LRU){
         LruUnhitSpace();
     }
-#endif // NDEBUG
   } else if (is_space){ //if it's an empty line
     ++i_num_space;
   } else {
@@ -223,43 +222,6 @@ bool IsHit(std::bitset<32> flags){
   return ret;
 }
 
-void GetReplace(std::bitset<32> flags){
-  if(full_associative == t_assoc){
-    if(Random == t_replace){
-      //a random and current line line in(0, i_num_line - 1)
-      current_line = rand() / (RAND_MAX/(i_num_line + 1));
-    } else if (LRU == t_replace){
-      LruUnhitUnspace();
-    }
-  } else if (set_associative == t_assoc){
-    //从本组中任选一行进行替换
-    if(Random == t_replace){
-      //a random line in(0, i_cache_set - 1)
-      temp = rand() / (RAND_MAX / i_cache_set + 1);
-      //a random line in current_set
-      current_line = current_set * i_cache_set + temp;
-    } else if (LRU == t_replace){
-      LruUnhitUnspace();
-    }
-  } else if (direct_mapped == t_assoc){
-    //TODO
-  }
-  //写入策略采用写回法
-  if(cache_item[current_line][29]){ //如果dirty位为1
-    GetWrite();
-  }
-#ifndef NDEBUG 
-  std::cout << "Read from Main Memory to Cache: " << std::endl;
-#endif
-  //设置标记
-  for(i = 31, j = 28; i > (31ul - bit_tag); --i, --j){
-    cache_item[current_line][j] = flags[i];
-    assert(j > 0);
-  }
-  //更新hit命中标记为true
-  cache_item[current_line][30] = true;
-}
-
 void GetRead(std::bitset<32> flags){
   if(direct_mapped == t_assoc){
     if(!cache_item[current_line][30]){ //miss hit
@@ -324,6 +286,45 @@ void GetRead(std::bitset<32> flags){
     }
   }//end else if
 }//end GetRead
+
+
+void GetReplace(std::bitset<32> flags){
+  if(full_associative == t_assoc){
+    if(Random == t_replace){
+      //a random and current line line in(0, i_num_line - 1)
+      current_line = rand() / (RAND_MAX/(i_num_line + 1));
+    } else if (LRU == t_replace){
+      LruUnhitUnspace();
+    }
+  } else if (set_associative == t_assoc){
+    //从本组中任选一行进行替换
+    if(Random == t_replace){
+      //a random line in(0, i_cache_set - 1)
+      temp = rand() / (RAND_MAX / i_cache_set + 1);
+      //a random line in current_set
+      current_line = current_set * i_cache_set + temp;
+    } else if (LRU == t_replace){
+      LruUnhitUnspace();
+    }
+  } else if (direct_mapped == t_assoc){
+    //TODO
+  }
+  //写入策略采用写回法
+  if(cache_item[current_line][29]){ //如果dirty位为1
+    GetWrite();
+  }
+#ifndef NDEBUG 
+  std::cout << "Read from Main Memory to Cache: " << std::endl;
+#endif
+  //设置标记
+  for(i = 31, j = 28; i > (31ul - bit_tag); --i, --j){
+    cache_item[current_line][j] = flags[i];
+    assert(j > 0);
+  }
+  //更新hit命中标记为true
+  cache_item[current_line][30] = true;
+}
+
 
 //模拟写入内存
 void GetWrite(){
