@@ -7,9 +7,7 @@
 ///////////////////////////////////////////////////////
 
 #define NDEBUG // for ndebug pattern
-#define QUICK // 快速测试程序的选项
-
-//#define OUTPUT //用于将信息写入日志文件test.log
+#define QUICK //快速测试程序的选项
 
 //#define DirectMapped_None_WriteBack //直接映射无回写
 //#define FullAssociative_Random_WriteBack //全相联随机回写
@@ -99,7 +97,7 @@ extern double f_store_rate; //Cache hit rate for stores
 //      false 对应 MESI 协议中的 E(exclusive)
 ///////////////////////////////////////////////////////
 extern std::bitset<32> cache_item[MAX_CACHE_LINE]; // [31]:valid,[30]:hit,[29]:dirty,[28]-[0]:data
-extern unsigned long int LRU_priority[MAX_CACHE_LINE]; //For LRU policy's priority ,标识cache中行的优先级
+extern unsigned long int LRU_priority[MAX_CACHE_LINE]; //For LRU policy's priority 
 extern unsigned long int current_line; // The line num which is processing
 extern unsigned long int current_set; // The set num which is processing
 extern unsigned long int i,j; //For loop
